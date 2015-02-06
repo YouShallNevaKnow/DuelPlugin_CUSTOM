@@ -1,0 +1,15 @@
+name: DuelCustom
+version: 0.0.1_CUSTOM
+main: com.gmail.gogobebe2.duel.Duel
+description: A pvp duel plugin for 1v1 fights.
+author: gogobebe2
+website: gogobebe2@gmail.com
+
+commands:
+    duel:
+        usage: /<command>
+        description: Opens up help menu.
+        permissions:
+            duel.*:
+                 description: Gives access to /duel
+                 default: op
