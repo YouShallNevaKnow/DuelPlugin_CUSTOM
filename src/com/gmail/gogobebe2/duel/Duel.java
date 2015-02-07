@@ -30,29 +30,24 @@ public class Duel extends JavaPlugin {
                 sender.sendMessage(ChatColor.RED + "You have to be a player to use this command!");
                 return true;
             }
+
             Player player = (Player) sender;
 
-
-            if (args.length == 0) {
-
-                //Requesting
-
-                return true;
-            }
-            else if (args[0].equalsIgnoreCase("accept")) {
-                if (args.length > 1) {
-                    player.sendMessage(ChatColor.GOLD + "Too many arguments! Type " + ChatColor.GREEN + ChatColor.ITALIC
-                            + "/duel <player>" + ChatColor.GOLD + " or " + ChatColor.GREEN + ChatColor.ITALIC + "/duel accept");
-                    return true;
-                }
-
-                //Accepting
-
-                return true;
-            }
-            else {
-                player.sendMessage(ChatColor.GOLD + "Wrong args! Type " + ChatColor.GREEN + ChatColor.ITALIC
+            if (args.length > 1) {
+                player.sendMessage(ChatColor.GOLD + "Too many arguments! Type " + ChatColor.GREEN + ChatColor.ITALIC
                         + "/duel <player>" + ChatColor.GOLD + " or " + ChatColor.GREEN + ChatColor.ITALIC + "/duel accept");
+                return true;
+            } else if (args[0].equalsIgnoreCase("accept")) {
+                //Accepting a duel with /duel accept:
+
+
+
+                return true;
+            } else {
+                //Requesting a duel with /duel <player>:
+
+
+
                 return true;
             }
         }
