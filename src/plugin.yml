@@ -8,7 +8,7 @@ website: gogobebe2@gmail.com
 commands:
     duel:
         usage: /<command>
-        description: Opens up help menu.
+        description: Duel a player in a 1v1 fight.
         permissions:
             duel.*:
                  description: Gives access to /duel

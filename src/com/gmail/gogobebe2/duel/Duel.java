@@ -1,5 +1,6 @@
 package com.gmail.gogobebe2.duel;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -33,7 +34,7 @@ public class Duel extends JavaPlugin {
 
             Player player = (Player) sender;
 
-            if (args.length > 1) {
+            if (args.length > 1 || args.length < 1) {
                 player.sendMessage(ChatColor.GOLD + "Too many arguments! Type " + ChatColor.GREEN + ChatColor.ITALIC
                         + "/duel <player>" + ChatColor.GOLD + " or " + ChatColor.GREEN + ChatColor.ITALIC + "/duel accept");
                 return true;
@@ -46,7 +47,10 @@ public class Duel extends JavaPlugin {
             } else {
                 //Requesting a duel with /duel <player>:
 
-
+                Player target = Bukkit.getPlayer(args[0]);
+                if (!target.isOnline()) {
+                    player.sendMessage(ChatColor.RED + "Can not find player!");
+                }
 
                 return true;
             }
