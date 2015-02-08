@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Duel extends JavaPlugin {
@@ -51,29 +52,48 @@ public class Duel extends JavaPlugin {
 
                 return true;
             } else if (args[0].equalsIgnoreCase("accept")) {
+                Player accepter = player;
+                Player requester = null;
+
                 //Accepting a duel with /duel accept:
                 if (pendingDuelRequests.isEmpty()) {
-                    player.sendMessage(ChatColor.RED + "No duel requests pending!");
+                    accepter.sendMessage(ChatColor.RED + "No duel requests pending!");
+                    return true;
+                }
+
+                if (pendingDuelRequests.isEmpty()) {
+                    accepter.sendMessage(ChatColor.RED + "No duel requests pending!");
+                    return true;
+                }
+                for (Player[] players : pendingDuelRequests) {
+                    if (players[0].equals(accepter)) {
+                        if (Arrays.asList(players).indexOf(accepter) == 1) {
+                            requester = players[0];
+                        } else {
+                            requester = players[1];
+                        }
+                        break;
+                    }
+                }
+                if (requester == null) {
+                    accepter.sendMessage(ChatColor.RED + "No duel requests pending!");
                     return true;
                 }
 
                 for (Player[] players : pendingDuelRequests) {
-                    for (Player p : players) {
-                        if (p.equals(player)) {
-                            for (Player pp : players) {
-                                pp.sendMessage(ChatColor.GREEN + "Duel accepted!");
-                            }
-                            playersInGame.add(players);
-                            pendingDuelRequests.remove(players);
-                            //TODO
-                            //Join arena code...
-                            //
-                            return true;
-                        }
+                    if (Arrays.equals(players, new Player[]{accepter, requester})) {
+                        pendingDuelRequests.remove(players);
+                        break;
                     }
                 }
 
-                player.sendMessage(ChatColor.RED + "No duel requests pending!");
+                accepter.sendMessage(ChatColor.DARK_PURPLE + " You accepted " + requester.getDisplayName() + ChatColor.DARK_PURPLE + "'s duel request");
+                requester.sendMessage(ChatColor.DARK_PURPLE + accepter.getDisplayName() + ChatColor.DARK_PURPLE + " has accepted your duel request");
+
+                /* TODO:
+                 - Start duel.
+                 */
+
 
                 return true;
             } else {
