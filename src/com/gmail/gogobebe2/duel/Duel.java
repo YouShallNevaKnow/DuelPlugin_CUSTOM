@@ -15,6 +15,7 @@ public class Duel extends JavaPlugin {
 
     //<Accepter, Requester>
     private List<Player[]> pendingDuelRequests = new ArrayList<>();
+    private List<Player[]> playersInGame = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -51,7 +52,28 @@ public class Duel extends JavaPlugin {
                 return true;
             } else if (args[0].equalsIgnoreCase("accept")) {
                 //Accepting a duel with /duel accept:
+                if (pendingDuelRequests.isEmpty()) {
+                    player.sendMessage(ChatColor.RED + "No duel requests pending!");
+                    return true;
+                }
 
+                for (Player[] players : pendingDuelRequests) {
+                    for (Player p : players) {
+                        if (p.equals(player)) {
+                            for (Player pp : players) {
+                                pp.sendMessage(ChatColor.GREEN + "Duel accepted!");
+                            }
+                            playersInGame.add(players);
+                            pendingDuelRequests.remove(players);
+                            //TODO
+                            //Join arena code...
+                            //
+                            return true;
+                        }
+                    }
+                }
+
+                player.sendMessage(ChatColor.RED + "No duel requests pending!");
 
                 return true;
             } else {
@@ -73,18 +95,15 @@ public class Duel extends JavaPlugin {
                 }
 
                 if (!pendingDuelRequests.isEmpty()) {
+                    boolean stopLoop = false;
                     for (Player[] players : pendingDuelRequests) {
                         for (Player p : players) {
                             if (p.equals(player) || p.equals(target)) {
-                                for (Player pp : players) {
-                                    pp.sendMessage(ChatColor.RED + "Previous duel request canceled");
-                                }
-                                pendingDuelRequests.remove(players);
+                                p.sendMessage(ChatColor.RED + "Previous duel request canceled");
+                                stopLoop = true;
                             }
                         }
-                        if (pendingDuelRequests.isEmpty()) {
-                            break;
-                        }
+                        if (stopLoop) {pendingDuelRequests.remove(players); break;}
                     }
                 }
 

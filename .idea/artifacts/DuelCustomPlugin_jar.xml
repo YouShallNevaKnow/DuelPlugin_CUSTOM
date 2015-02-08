@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DuelCustomPlugin:jar">
+    <output-path>$USER_HOME$/Desktop/Plugin Development</output-path>
+    <root id="archive" name="DuelPlugin.jar">
+      <element id="module-output" name="DuelPlugin" />
+      <element id="library" level="project" name="spigot-api-1.8-R0.1-SNAPSHOT" />
+    </root>
+  </artifact>
+</component>
