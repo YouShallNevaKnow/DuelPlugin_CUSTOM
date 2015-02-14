@@ -50,9 +50,9 @@ public class DuelListener implements Listener{
                 Location playerLoc = event.getTo();
 
                 boolean _30BlocksAway = (
-                            (playerLoc.getX() >= (10 + centerX) || playerLoc.getX() <= (centerX - 10))
-                        ||  (playerLoc.getY() >= (10 + centerZ) || playerLoc.getY() <= (centerY - 10))
-                        ||  (playerLoc.getZ() >= (10 + centerZ) || playerLoc.getZ() <= (centerZ - 10))
+                            (playerLoc.getX() >= (30 + centerX) || playerLoc.getX() <= (centerX - 30))
+                        ||  (playerLoc.getY() >= (30 + centerZ) || playerLoc.getY() <= (centerY - 30))
+                        ||  (playerLoc.getZ() >= (30 + centerZ) || playerLoc.getZ() <= (centerZ - 30))
                 );
                 if (_30BlocksAway) {
                     event.setTo(event.getFrom());
