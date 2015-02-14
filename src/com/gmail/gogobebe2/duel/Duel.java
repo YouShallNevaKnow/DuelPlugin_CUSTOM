@@ -34,6 +34,9 @@ public class Duel extends JavaPlugin {
     public static List<Player[]> getPlayersInGame() {
         return playersInGame;
     }
+    public static Location getOriginalLocation(Player player) {
+        return originalLocation.get(player);
+    }
 
     @Override
     public void onEnable() {
@@ -129,43 +132,6 @@ public class Duel extends JavaPlugin {
 
                 /*******************************************************/
 
-                Location centerPoint = accepter.getLocation();
-                double accepterX = accepter.getLocation().getX();
-                double accepterY = accepter.getLocation().getY();
-                double accepterZ = accepter.getLocation().getZ();
-                double requesterX = requester.getLocation().getX();
-                double requesterY = requester.getLocation().getY();
-                double requesterZ = requester.getLocation().getZ();
-
-                double centerX;
-                double centerY;
-                double centerZ;
-
-                if (accepterX > requesterX) {
-                    centerX = (accepterX - requesterX) / 2 + requesterY;
-                }
-                else {
-                    centerX = (requesterX - accepterX) / 2 + accepterY;
-                }
-
-                if (accepterY > requesterY) {
-                    centerY = (accepterY - requesterY) / 2 + requesterY;
-                }
-                else {
-                    centerY = (requesterY - accepterY) / 2 + accepterY;
-                }
-
-                if (accepterZ > requesterZ) {
-                    centerZ = (accepterZ - requesterZ) / 2 + requesterZ;
-                }
-                else {
-                    centerZ = (requesterZ - accepterZ) / 2 + accepterZ;
-                }
-
-                centerPoint.setX(centerX);
-                centerPoint.setY(centerY);
-                centerPoint.setZ(centerZ);
-
                 playersGamingStarting.add(accepter);
                 playersGamingStarting.add(requester);
                 for (Player p : players) {
@@ -195,10 +161,11 @@ public class Duel extends JavaPlugin {
                             playersGamingStarting.remove(plr);
                             playersInGame.add(plrs);
                             plr.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.ITALIC + "FIGHT!");
-                            plr.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
-                            plr.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 1));
-                            plr.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 3));
-                            //playersInGame.remove(plrs);
+                            plr.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
+                            // TODO:
+                            // Do:
+                            // playersInGame.remove(plrs);
+                            // on player death.
                         }
                     }, 20 * 4);
                 }
@@ -218,7 +185,11 @@ public class Duel extends JavaPlugin {
                     return true;
                 } else if ((player.getLocation().getX() - target.getLocation().getX() > 10)
                         || (player.getLocation().getY() - target.getLocation().getY() > 10)
-                        || (player.getLocation().getZ() - target.getLocation().getZ() > 10)) {
+                        || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
+                        ||
+                           (player.getLocation().getX() - target.getLocation().getX() < -10)
+                        || (player.getLocation().getY() - target.getLocation().getY() < -10)
+                        || (player.getLocation().getZ() - target.getLocation().getZ() < -10)) {
 
                     player.sendMessage(ChatColor.GOLD + "You need to be within 10 blocks of that player to duel!");
                     return true;

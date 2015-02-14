@@ -27,43 +27,32 @@ public class DuelListener implements Listener{
             }
 
             if (accepter != null && requester != null) {
-                double accepterX = accepter.getLocation().getX();
-                double accepterY = accepter.getLocation().getY();
-                double accepterZ = accepter.getLocation().getZ();
-                double requesterX = requester.getLocation().getX();
-                double requesterY = requester.getLocation().getY();
-                double requesterZ = requester.getLocation().getZ();
+                Location accepterOriginalLocation = Duel.getOriginalLocation(accepter);
+                Location requesterOriginalLocation = Duel.getOriginalLocation(requester);
+                
+                double accepterX = accepterOriginalLocation.getX();
+                double accepterY = accepterOriginalLocation.getY();
+                double accepterZ = accepterOriginalLocation.getZ();
+                double requesterX = requesterOriginalLocation.getX();
+                double requesterY = requesterOriginalLocation.getY();
+                double requesterZ = requesterOriginalLocation.getZ();
 
                 double centerX;
                 double centerY;
                 double centerZ;
 
-                if (accepterX > requesterX) {
-                    centerX = (accepterX - requesterX) / 2 + requesterY;
-                }
-                else {
-                    centerX = (requesterX - accepterX) / 2 + accepterY;
-                }
+                centerX = (requesterX + accepterX) / 2;
 
-                if (accepterY > requesterY) {
-                    centerY = (accepterY - requesterY) / 2 + requesterY;
-                }
-                else {
-                    centerY = (requesterY - accepterY) / 2 + accepterY;
-                }
+                centerY = (accepterY + requesterY) / 2;
 
-                if (accepterZ > requesterZ) {
-                    centerZ = (accepterZ - requesterZ) / 2 + requesterZ;
-                }
-                else {
-                    centerZ = (requesterZ - accepterZ) / 2 + accepterZ;
-                }
+                centerZ = (accepterZ + requesterZ) / 2;
 
                 Location playerLoc = event.getTo();
+
                 boolean _30BlocksAway = (
-                            (playerLoc.getX() > (30 + centerX) || playerLoc.getX() > (centerX - 30))
-                        ||  (playerLoc.getY() > (30 + centerZ) || playerLoc.getY() > (centerY - 30))
-                        ||  (playerLoc.getZ() > (30 + centerZ) || playerLoc.getZ() > (centerZ - 30))
+                            (playerLoc.getX() >= (10 + centerX) || playerLoc.getX() <= (centerX - 10))
+                        ||  (playerLoc.getY() >= (10 + centerZ) || playerLoc.getY() <= (centerY - 10))
+                        ||  (playerLoc.getZ() >= (10 + centerZ) || playerLoc.getZ() <= (centerZ - 10))
                 );
                 if (_30BlocksAway) {
                     event.setTo(event.getFrom());
