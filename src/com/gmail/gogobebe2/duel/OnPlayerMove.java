@@ -7,19 +7,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class DuelListener implements Listener{
+public class OnPlayerMove implements Listener{
     private final Duel plugin;
 
-    public DuelListener(Duel plugin) {
+    public OnPlayerMove(Duel plugin) {
         this.plugin = plugin; // Store the plugin in situations where you need it.
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (!Duel.getPlayersInGame().isEmpty()) {
+        if (!plugin.getPlayersInGame().isEmpty()) {
             Player accepter = null, requester = null;
-            for (Player[] players : Duel.getPlayersInGame()) {
+            for (Player[] players : plugin.getPlayersInGame()) {
                 if (players[0].equals(player) || players[1].equals(player)) {
                     accepter = players[0];
                     requester = players[1];
@@ -27,9 +27,9 @@ public class DuelListener implements Listener{
             }
 
             if (accepter != null && requester != null) {
-                Location accepterOriginalLocation = Duel.getOriginalLocation(accepter);
-                Location requesterOriginalLocation = Duel.getOriginalLocation(requester);
-                
+                Location accepterOriginalLocation = plugin.getOriginalLocation().get(accepter);
+                Location requesterOriginalLocation = plugin.getOriginalLocation().get(requester);
+
                 double accepterX = accepterOriginalLocation.getX();
                 double accepterY = accepterOriginalLocation.getY();
                 double accepterZ = accepterOriginalLocation.getZ();
@@ -63,8 +63,8 @@ public class DuelListener implements Listener{
             }
         }
 
-        if (!Duel.getPlayersGameStarting().isEmpty()) {
-            for (Player p : Duel.getPlayersGameStarting()) {
+        if (!plugin.getPlayersGameStarting().isEmpty()) {
+            for (Player p : plugin.getPlayersGameStarting()) {
                 if (p.equals(player)) {
                     event.setTo(event.getFrom());
                 }
