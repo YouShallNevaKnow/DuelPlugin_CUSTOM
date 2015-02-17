@@ -18,46 +18,35 @@ public class OnPlayerMove implements Listener{
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (!plugin.getPlayersInGame().isEmpty()) {
-            Player accepter = null, requester = null;
+            Player accepter, requester;
             for (Player[] players : plugin.getPlayersInGame()) {
                 if (players[0].equals(player) || players[1].equals(player)) {
                     accepter = players[0];
                     requester = players[1];
-                }
-            }
 
-            if (accepter != null && requester != null) {
-                Location accepterOriginalLocation = plugin.getOriginalLocation().get(accepter);
-                Location requesterOriginalLocation = plugin.getOriginalLocation().get(requester);
+                    double accepterX = plugin.getOriginalLocation().get(accepter).getX();
+                    double accepterY = plugin.getOriginalLocation().get(accepter).getY();
+                    double accepterZ = plugin.getOriginalLocation().get(accepter).getZ();
+                    double requesterX = plugin.getOriginalLocation().get(requester).getX();
+                    double requesterY = plugin.getOriginalLocation().get(requester).getY();
+                    double requesterZ = plugin.getOriginalLocation().get(requester).getZ();
 
-                double accepterX = accepterOriginalLocation.getX();
-                double accepterY = accepterOriginalLocation.getY();
-                double accepterZ = accepterOriginalLocation.getZ();
-                double requesterX = requesterOriginalLocation.getX();
-                double requesterY = requesterOriginalLocation.getY();
-                double requesterZ = requesterOriginalLocation.getZ();
+                    double centerX = (requesterX + accepterX) / 2;
+                    double centerY = (accepterY + requesterY) / 2;
+                    double centerZ = (accepterZ + requesterZ) / 2;
 
-                double centerX;
-                double centerY;
-                double centerZ;
+                    Location playerLoc = event.getTo();
 
-                centerX = (requesterX + accepterX) / 2;
-
-                centerY = (accepterY + requesterY) / 2;
-
-                centerZ = (accepterZ + requesterZ) / 2;
-
-                Location playerLoc = event.getTo();
-
-                boolean _30BlocksAway = (
+                    boolean _30BlocksAway = (
                             (playerLoc.getX() >= (30 + centerX) || playerLoc.getX() <= (centerX - 30))
-                        ||  (playerLoc.getY() >= (30 + centerZ) || playerLoc.getY() <= (centerY - 30))
-                        ||  (playerLoc.getZ() >= (30 + centerZ) || playerLoc.getZ() <= (centerZ - 30))
-                );
-                if (_30BlocksAway) {
-                    event.setTo(event.getFrom());
-                    player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD
-                            + "You have reached the border of the duel! Turn back and face your enemy like a man!");
+                                    ||  (playerLoc.getY() >= (30 + centerZ) || playerLoc.getY() <= (centerY - 30))
+                                    ||  (playerLoc.getZ() >= (30 + centerZ) || playerLoc.getZ() <= (centerZ - 30))
+                    );
+                    if (_30BlocksAway) {
+                        player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD
+                                + "You have reached the border of the duel! Turn back and face your enemy like a man!");
+                        event.setCancelled(true);
+                    }
                     return;
                 }
             }
@@ -66,7 +55,7 @@ public class OnPlayerMove implements Listener{
         if (!plugin.getPlayersGameStarting().isEmpty()) {
             for (Player p : plugin.getPlayersGameStarting()) {
                 if (p.equals(player)) {
-                    event.setTo(event.getFrom());
+                    event.setCancelled(true);
                 }
             }
         }

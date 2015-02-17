@@ -20,79 +20,6 @@ public class Duel extends JavaPlugin {
     private static List<Player[]> pendingDuelRequests = new ArrayList<>();
     private static List<Player> playersGameStarting = new ArrayList<>();
     private static List<Player[]> playersInGame = new ArrayList<>();
-
-    public static void setPlayersInGame(List<Player[]> playersInGame) {
-        Duel.playersInGame = playersInGame;
-    }
-
-    public static HashMap<Player, GameMode> getOriginalGamemode() {
-        return originalGamemode;
-    }
-
-    public static void setOriginalGamemode(HashMap<Player, GameMode> originalGamemode) {
-        Duel.originalGamemode = originalGamemode;
-    }
-
-    public static HashMap<Player, Location> getOriginalLocation() {
-        return originalLocation;
-    }
-
-    public static void setOriginalLocation(HashMap<Player, Location> originalLocation) {
-        Duel.originalLocation = originalLocation;
-    }
-
-    public static HashMap<Player, Integer> getOriginalFoodLevel() {
-        return originalFoodLevel;
-    }
-
-    public static void setOriginalFoodLevel(HashMap<Player, Integer> originalFoodLevel) {
-        Duel.originalFoodLevel = originalFoodLevel;
-    }
-
-    public static HashMap<Player, Integer> getOriginalFireTicks() {
-        return originalFireTicks;
-    }
-
-    public static void setOriginalFireTicks(HashMap<Player, Integer> originalFireTicks) {
-        Duel.originalFireTicks = originalFireTicks;
-    }
-
-    public static HashMap<Player, Float> getOriginalEXP() {
-        return originalEXP;
-    }
-
-    public static void setOriginalEXP(HashMap<Player, Float> originalEXP) {
-        Duel.originalEXP = originalEXP;
-    }
-
-    public static HashMap<Player, Double> getOriginalHealth() {
-        return originalHealth;
-    }
-
-    public static void setOriginalHealth(HashMap<Player, Double> originalHealth) {
-        Duel.originalHealth = originalHealth;
-    }
-
-    public static HashMap<Player, Collection<PotionEffect>> getOriginalPotionEffects() {
-        return originalPotionEffects;
-    }
-
-    public static void setOriginalPotionEffects(HashMap<Player, Collection<PotionEffect>> originalPotionEffects) {
-        Duel.originalPotionEffects = originalPotionEffects;
-    }
-
-    public static List<Player> getPlayersGameStarting() {
-        return playersGameStarting;
-    }
-
-    public static void setPlayersGamingStarting(List<Player> playersGamingStarting) {
-        Duel.playersGameStarting = playersGamingStarting;
-    }
-
-    public static List<Player[]> getPlayersInGame() {
-        return playersInGame;
-    }
-
     private static HashMap<Player, Location> originalLocation = new HashMap<>();
     private static HashMap<Player, GameMode> originalGamemode = new HashMap<>();
     private static HashMap<Player, Integer> originalFoodLevel = new HashMap<>();
@@ -101,12 +28,49 @@ public class Duel extends JavaPlugin {
     private static HashMap<Player, Double> originalHealth = new HashMap<>();
     private static HashMap<Player, Collection<PotionEffect>> originalPotionEffects = new HashMap<>();
 
+    public static List<Player[]> getPlayersInGame() {
+        return playersInGame;
+    }
+
+    public static HashMap<Player, GameMode> getOriginalGamemode() {
+        return originalGamemode;
+    }
+
+    public static HashMap<Player, Location> getOriginalLocation() {
+        return originalLocation;
+    }
+
+    public static HashMap<Player, Integer> getOriginalFoodLevel() {
+        return originalFoodLevel;
+    }
+
+    public static HashMap<Player, Integer> getOriginalFireTicks() {
+        return originalFireTicks;
+    }
+
+    public static HashMap<Player, Float> getOriginalEXP() {
+        return originalEXP;
+    }
+
+    public static HashMap<Player, Double> getOriginalHealth() {
+        return originalHealth;
+    }
+
+    public static HashMap<Player, Collection<PotionEffect>> getOriginalPotionEffects() {
+        return originalPotionEffects;
+    }
+
+    public static List<Player> getPlayersGameStarting() {
+        return playersGameStarting;
+    }
+
 
     @Override
     public void onEnable() {
         loadConf();
         getServer().getPluginManager().registerEvents(new OnPlayerMove(this), this);
         getServer().getPluginManager().registerEvents(new OnPlayerDamaged(this), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerQuit(this), this);
     }
 
     private void loadConf() {
@@ -128,7 +92,7 @@ public class Duel extends JavaPlugin {
             Player player = (Player) sender;
 
             if (args.length > 1 || args.length < 1) {
-                player.sendMessage(ChatColor.GOLD + "Too many arguments! Type " + ChatColor.GREEN + ChatColor.ITALIC
+                player.sendMessage(ChatColor.GOLD + "(Wrong/Wrong number) of arguments! Type " + ChatColor.GREEN + ChatColor.ITALIC
                         + "/duel <player>" + ChatColor.GOLD + " or " + ChatColor.GREEN + ChatColor.ITALIC + "/duel accept");
                 return true;
             } else if (args[0].equalsIgnoreCase("deny")) {
@@ -189,7 +153,7 @@ public class Duel extends JavaPlugin {
                 originalFireTicks.put(requester, requester.getFireTicks());
                 originalEXP.put(requester, requester.getExp());
                 originalHealth.put(requester, requester.getHealth());
-                originalPotionEffects.put(accepter, accepter.getActivePotionEffects());
+                originalPotionEffects.put(requester, requester.getActivePotionEffects());
 
                 /*******************************************************/
 
@@ -223,14 +187,12 @@ public class Duel extends JavaPlugin {
                             playersInGame.add(plrs);
                             plr.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.ITALIC + "FIGHT!");
                             plr.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
-                            // TODO:
-                            // Do:
-                            // playersInGame.remove(plrs);
-                            // on player death.
+                            plr.setGameMode(GameMode.ADVENTURE);
+                            plr.setFireTicks(0);
+                            plr.setFoodLevel(20);
                         }
                     }, 20 * 4);
                 }
-
 
 
                 return true;
@@ -248,7 +210,7 @@ public class Duel extends JavaPlugin {
                         || (player.getLocation().getY() - target.getLocation().getY() > 10)
                         || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
                         ||
-                           (player.getLocation().getX() - target.getLocation().getX() < -10)
+                        (player.getLocation().getX() - target.getLocation().getX() < -10)
                         || (player.getLocation().getY() - target.getLocation().getY() < -10)
                         || (player.getLocation().getZ() - target.getLocation().getZ() < -10)) {
 
