@@ -6,23 +6,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-/**
- * Created by william on 2/15/15.
- */
 public class OnPlayerDamaged implements Listener {
-    private final Duel plugin;
-
-    public OnPlayerDamaged(Duel plugin) {
-        this.plugin = plugin; // Store the plugin in situations where you need it.
-    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerDamageReceive(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
 
-            if (!plugin.getPlayersInGame().isEmpty()) {
-                for (Player[] players : plugin.getPlayersInGame()) {
+            if (!Duel.getPlayersInGame().isEmpty()) {
+                for (Player[] players : Duel.getPlayersInGame()) {
                     if (players[0].equals(player) || players[1].equals(player)) {
                         Player killer;
                         if (players[0].equals(player)) {
@@ -33,7 +25,7 @@ public class OnPlayerDamaged implements Listener {
                         if (e.getFinalDamage() >= player.getHealth()) {
                             //Been killed...
 
-                            DuelUtils.leaveDuel(plugin, players, player, killer);
+                            DuelUtils.leaveDuel(players, player, killer);
 
                             e.setCancelled(true);
 

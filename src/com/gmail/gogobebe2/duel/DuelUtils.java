@@ -8,11 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
-/**
- * Created by william on 2/17/15.
- */
 public class DuelUtils {
-    public static void leaveDuel(Duel plugin, Player[] players, Player player, Player killer) {
+    public static void leaveDuel(Player[] players, Player player, Player killer) {
         Firework f = killer.getWorld().spawn(killer.getLocation(), Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
         fm.addEffect(FireworkEffect.builder()
@@ -22,30 +19,30 @@ public class DuelUtils {
         f.setFireworkMeta(fm);
 
         for (Player p : players) {
-            p.teleport(plugin.getOriginalLocation().get(p));
-            p.setGameMode(plugin.getOriginalGamemode().get(p));
-            p.setFoodLevel(plugin.getOriginalFoodLevel().get(p));
-            p.setFireTicks(plugin.getOriginalFireTicks().get(p));
-            p.setExp(plugin.getOriginalEXP().get(p));
-            p.setHealth(plugin.getOriginalHealth().get(p));
+            p.teleport(Duel.getOriginalLocation().get(p));
+            p.setGameMode(Duel.getOriginalGamemode().get(p));
+            p.setFoodLevel(Duel.getOriginalFoodLevel().get(p));
+            p.setFireTicks(Duel.getOriginalFireTicks().get(p));
+            p.setExp(Duel.getOriginalEXP().get(p));
+            p.setHealth(Duel.getOriginalHealth().get(p));
             if (!p.getActivePotionEffects().isEmpty()) {
                 for (PotionEffect potion : p.getActivePotionEffects()) {
                     p.removePotionEffect(potion.getType());
                 }
             }
-            for (PotionEffect potion : plugin.getOriginalPotionEffects().get(p)) {
+            for (PotionEffect potion : Duel.getOriginalPotionEffects().get(p)) {
                 p.addPotionEffect(potion);
             }
 
-            plugin.getPlayersInGame().remove(players);
+            Duel.getPlayersInGame().remove(players);
 
-            plugin.getOriginalLocation().remove(p);
-            plugin.getOriginalGamemode().remove(p);
-            plugin.getOriginalFoodLevel().remove(p);
-            plugin.getOriginalFireTicks().remove(p);
-            plugin.getOriginalEXP().remove(p);
-            plugin.getOriginalHealth().remove(p);
-            plugin.getOriginalPotionEffects().remove(p);
+            Duel.getOriginalLocation().remove(p);
+            Duel.getOriginalGamemode().remove(p);
+            Duel.getOriginalFoodLevel().remove(p);
+            Duel.getOriginalFireTicks().remove(p);
+            Duel.getOriginalEXP().remove(p);
+            Duel.getOriginalHealth().remove(p);
+            Duel.getOriginalPotionEffects().remove(p);
         }
 
         killer.sendMessage(ChatColor.DARK_AQUA + "You won a duel against " + player.getDisplayName() + ". Congratulations!");

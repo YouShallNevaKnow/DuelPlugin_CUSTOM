@@ -68,9 +68,9 @@ public class Duel extends JavaPlugin {
     @Override
     public void onEnable() {
         loadConf();
-        getServer().getPluginManager().registerEvents(new OnPlayerMove(this), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerDamaged(this), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerQuit(this), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerMove(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerDamaged(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerQuit(), this);
     }
 
     private void loadConf() {
