@@ -126,6 +126,7 @@ public class Duel extends JavaPlugin {
                 }
 
                 Player[] players = {accepter, requester};
+
                 for (Player[] pp : pendingDuelRequests) {
                     if (Arrays.equals(pp, players)) {
                         pendingDuelRequests.remove(pp);
@@ -206,7 +207,12 @@ public class Duel extends JavaPlugin {
                 } else if (player.equals(target)) {
                     player.sendMessage(ChatColor.DARK_PURPLE + "You can't duel yourself silly billy!");
                     return true;
-                } else if ((player.getLocation().getX() - target.getLocation().getX() > 10)
+                }
+                else if (playersInGame.contains(target)) {
+                    player.sendMessage(ChatColor.RED + "That player is already in a duel!");
+                    return true;
+                }
+                else if ((player.getLocation().getX() - target.getLocation().getX() > 10)
                         || (player.getLocation().getY() - target.getLocation().getY() > 10)
                         || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
                         ||
