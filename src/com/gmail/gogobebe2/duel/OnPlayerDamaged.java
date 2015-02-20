@@ -10,18 +10,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class OnPlayerDamaged implements Listener {
 
-    private boolean hasBeenKilled(EntityDamageEvent e, Player player, Player killer, Player[] players) {
-        if (e.getFinalDamage() >= player.getHealth()) {
-            //Been killed...
-            return true;
-
-        } else {
-            //Just hit and not killed, I want it to also override factions or other plugins similar.
-            return false;
-
-        }
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerDamageReceive(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
@@ -56,7 +44,7 @@ public class OnPlayerDamaged implements Listener {
                         }
                     }
                     if (killer != null) {
-                        if (hasBeenKilled(event, player, killer, players)) {
+                        if (event.getFinalDamage() >= player.getHealth()) {
                             DuelUtils.leaveDuel(players, player, killer);
                             event.setCancelled(true);
                         } else {
