@@ -53,6 +53,7 @@ public class OnPlayerDamaged implements Listener {
                         if (event.getFinalDamage() >= player.getHealth()) {
                             DuelUtils.leaveDuel(players, player, killer);
                             event.setCancelled(true);
+                            return;
                         } else {
                             event.setCancelled(false);
                         }
@@ -61,6 +62,18 @@ public class OnPlayerDamaged implements Listener {
 
             }
 
+        }
+        else {
+            if (event instanceof EntityDamageByEntityEvent) {
+                EntityDamageByEntityEvent eEvent = (EntityDamageByEntityEvent) event;
+                for (Player[] players : Duel.getPlayersInGame()) {
+                    if (players[0].equals(eEvent.getDamager()) || players[1].equals(eEvent.getDamager())) {
+                        eEvent.getDamager().sendMessage(ChatColor.BLUE + "You cannot damage mobs while in a duel!");
+                        event.setCancelled(true);
+                        break;
+                    }
+                }
+            }
         }
 
     }

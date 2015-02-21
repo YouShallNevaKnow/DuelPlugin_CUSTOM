@@ -71,6 +71,7 @@ public class Duel extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnPlayerMove(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerDamaged(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerQuit(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerDrop(), this);
     }
 
     private void loadConf() {
@@ -79,6 +80,112 @@ public class Duel extends JavaPlugin {
             this.saveDefaultConfig();
         }
         reloadConfig();
+    }
+
+    private boolean JoinArena(Player accepter, Player requester, Player[] players) {
+
+        /**************** Accepter original data ***************/
+        //Accepter original data
+        originalLocation.put(accepter, accepter.getLocation());
+        originalGamemode.put(accepter, accepter.getGameMode());
+        originalFoodLevel.put(accepter, accepter.getFoodLevel());
+        originalFireTicks.put(accepter, accepter.getFireTicks());
+        originalEXP.put(accepter, accepter.getExp());
+        originalHealth.put(accepter, accepter.getHealth());
+        originalPotionEffects.put(accepter, accepter.getActivePotionEffects());
+
+        //Requester original data
+        originalLocation.put(requester, requester.getLocation());
+        originalGamemode.put(requester, requester.getGameMode());
+        originalFoodLevel.put(requester, requester.getFoodLevel());
+        originalFireTicks.put(requester, requester.getFireTicks());
+        originalEXP.put(requester, requester.getExp());
+        originalHealth.put(requester, requester.getHealth());
+        originalPotionEffects.put(requester, requester.getActivePotionEffects());
+
+        /*******************************************************/
+
+        playersGameStarting.add(accepter);
+        playersGameStarting.add(requester);
+        for (Player p : players) {
+            @SuppressWarnings("SpellCheckingInspection") final Player[] plrs = players;
+            final Player plr = p;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    plr.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Duel starting in" + ChatColor.GREEN + " 3");
+                }
+            }, 20);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    plr.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Duel starting in" + ChatColor.GREEN + " 2");
+                }
+            }, 20 * 2);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    plr.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Duel starting in" + ChatColor.GREEN + " 1");
+                }
+            }, 20 * 3);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    playersGameStarting.remove(plr);
+                    playersInGame.add(plrs);
+                    plr.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.ITALIC + "FIGHT!");
+                    plr.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
+                    plr.setGameMode(GameMode.ADVENTURE);
+                    plr.setFireTicks(0);
+                    plr.setFoodLevel(20);
+                }
+            }, 20 * 4);
+        }
+        return true;
+    }
+
+    private boolean StopPendingRequest(Player accepter, boolean isAccepting) {
+        Player requester = null;
+
+        //Accepting a duel with /duel accept:
+        if (pendingDuelRequests.isEmpty()) {
+            accepter.sendMessage(ChatColor.RED + "No duel requests pending!");
+            return true;
+        }
+
+        for (Player[] players : pendingDuelRequests) {
+            if (players[0].equals(accepter)) {
+                if (Arrays.asList(players).indexOf(accepter) == 1) {
+                    requester = players[0];
+                } else {
+                    requester = players[1];
+                }
+                break;
+            }
+        }
+        if (requester == null) {
+            accepter.sendMessage(ChatColor.RED + "No duel requests pending!");
+            return true;
+        }
+
+        Player[] players = {accepter, requester};
+
+        for (Player[] pp : pendingDuelRequests) {
+            if (Arrays.equals(pp, players)) {
+                pendingDuelRequests.remove(pp);
+                break;
+            }
+        }
+
+        if (isAccepting) {
+            accepter.sendMessage(ChatColor.LIGHT_PURPLE + " You accepted " + requester.getDisplayName() + ChatColor.DARK_PURPLE + "'s duel request");
+            requester.sendMessage(ChatColor.LIGHT_PURPLE + accepter.getDisplayName() + ChatColor.DARK_PURPLE + " has accepted your duel request");
+            JoinArena(accepter, requester, players);
+        } else {
+            accepter.sendMessage(ChatColor.LIGHT_PURPLE + "You denied the duel request.");
+            requester.sendMessage(ChatColor.LIGHT_PURPLE + accepter.getDisplayName() + " denied your duel request.");
+        }
+        return true;
     }
 
     @Override
@@ -97,132 +204,40 @@ public class Duel extends JavaPlugin {
                 return true;
             } else if (args[0].equalsIgnoreCase("deny")) {
                 //Denying a duel with /duel deny:
+                return StopPendingRequest(player, false);
 
-
-                return true;
             } else if (args[0].equalsIgnoreCase("accept")) {
-                @SuppressWarnings("UnnecessaryLocalVariable") Player accepter = player;
-                Player requester = null;
-
                 //Accepting a duel with /duel accept:
-                if (pendingDuelRequests.isEmpty()) {
-                    accepter.sendMessage(ChatColor.RED + "No duel requests pending!");
-                    return true;
-                }
+                return StopPendingRequest(player, true);
 
-                for (Player[] players : pendingDuelRequests) {
-                    if (players[0].equals(accepter)) {
-                        if (Arrays.asList(players).indexOf(accepter) == 1) {
-                            requester = players[0];
-                        } else {
-                            requester = players[1];
-                        }
-                        break;
-                    }
-                }
-                if (requester == null) {
-                    accepter.sendMessage(ChatColor.RED + "No duel requests pending!");
-                    return true;
-                }
-
-                Player[] players = {accepter, requester};
-
-                for (Player[] pp : pendingDuelRequests) {
-                    if (Arrays.equals(pp, players)) {
-                        pendingDuelRequests.remove(pp);
-                        break;
-                    }
-                }
-
-                accepter.sendMessage(ChatColor.DARK_PURPLE + " You accepted " + requester.getDisplayName() + ChatColor.DARK_PURPLE + "'s duel request");
-                requester.sendMessage(ChatColor.DARK_PURPLE + accepter.getDisplayName() + ChatColor.DARK_PURPLE + " has accepted your duel request");
-
-                /**************** Accepter original data ***************/
-                //Accepter original data
-                originalLocation.put(accepter, accepter.getLocation());
-                originalGamemode.put(accepter, accepter.getGameMode());
-                originalFoodLevel.put(accepter, accepter.getFoodLevel());
-                originalFireTicks.put(accepter, accepter.getFireTicks());
-                originalEXP.put(accepter, accepter.getExp());
-                originalHealth.put(accepter, accepter.getHealth());
-                originalPotionEffects.put(accepter, accepter.getActivePotionEffects());
-
-                //Requester original data
-                originalLocation.put(requester, requester.getLocation());
-                originalGamemode.put(requester, requester.getGameMode());
-                originalFoodLevel.put(requester, requester.getFoodLevel());
-                originalFireTicks.put(requester, requester.getFireTicks());
-                originalEXP.put(requester, requester.getExp());
-                originalHealth.put(requester, requester.getHealth());
-                originalPotionEffects.put(requester, requester.getActivePotionEffects());
-
-                /*******************************************************/
-
-                playersGameStarting.add(accepter);
-                playersGameStarting.add(requester);
-                for (Player p : players) {
-                    @SuppressWarnings("SpellCheckingInspection") final Player[] plrs = players;
-                    final Player plr = p;
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                        @Override
-                        public void run() {
-                            plr.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Duel starting in" + ChatColor.GREEN + " 3");
-                        }
-                    }, 20);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                        @Override
-                        public void run() {
-                            plr.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Duel starting in" + ChatColor.GREEN + " 2");
-                        }
-                    }, 20 * 2);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                        @Override
-                        public void run() {
-                            plr.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Duel starting in" + ChatColor.GREEN + " 1");
-                        }
-                    }, 20 * 3);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                        @Override
-                        public void run() {
-                            playersGameStarting.remove(plr);
-                            playersInGame.add(plrs);
-                            plr.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.ITALIC + "FIGHT!");
-                            plr.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
-                            plr.setGameMode(GameMode.ADVENTURE);
-                            plr.setFireTicks(0);
-                            plr.setFoodLevel(20);
-                        }
-                    }, 20 * 4);
-                }
-
-
-                return true;
             } else {
                 //Requesting a duel with /duel <player>:
 
-                Player target = Bukkit.getPlayer(args[0]);
-                if (!target.isOnline()) {
+                Player target;
+                if ((Bukkit.getOnlinePlayers().size() <= 1) || !Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0]))) {
                     player.sendMessage(ChatColor.RED + "Can not find player!");
                     return true;
-                } else if (player.equals(target)) {
-                    player.sendMessage(ChatColor.DARK_PURPLE + "You can't duel yourself silly billy!");
-                    return true;
-                }
-                else if (playersInGame.contains(target)) {
-                    player.sendMessage(ChatColor.RED + "That player is already in a duel!");
-                    return true;
-                }
-                else if ((player.getLocation().getX() - target.getLocation().getX() > 10)
-                        || (player.getLocation().getY() - target.getLocation().getY() > 10)
-                        || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
-                        ||
-                        (player.getLocation().getX() - target.getLocation().getX() < -10)
-                        || (player.getLocation().getY() - target.getLocation().getY() < -10)
-                        || (player.getLocation().getZ() - target.getLocation().getZ() < -10)) {
+                } else {
+                    target = Bukkit.getPlayer(args[0]);
+                    if (player.equals(target)) {
+                        player.sendMessage(ChatColor.DARK_PURPLE + "You can't duel yourself silly billy!");
+                        return true;
+                    } else if (playersInGame.contains(target)) {
+                        player.sendMessage(ChatColor.RED + "That player is already in a duel!");
+                        return true;
+                    } else if ((player.getLocation().getX() - target.getLocation().getX() > 10)
+                            || (player.getLocation().getY() - target.getLocation().getY() > 10)
+                            || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
+                            ||
+                            (player.getLocation().getX() - target.getLocation().getX() < -10)
+                            || (player.getLocation().getY() - target.getLocation().getY() < -10)
+                            || (player.getLocation().getZ() - target.getLocation().getZ() < -10)) {
 
-                    player.sendMessage(ChatColor.GOLD + "You need to be within 10 blocks of that player to duel!");
-                    return true;
+                        player.sendMessage(ChatColor.GOLD + "You need to be within 10 blocks of that player to duel!");
+                        return true;
+                    }
                 }
+
 
                 if (!pendingDuelRequests.isEmpty()) {
                     boolean stopLoop = false;
