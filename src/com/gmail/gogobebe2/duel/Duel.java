@@ -217,29 +217,32 @@ public class Duel extends JavaPlugin {
                 if ((Bukkit.getOnlinePlayers().size() <= 1) || !Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0]))) {
                     player.sendMessage(ChatColor.RED + "Can not find player!");
                     return true;
-                } else {
-                    target = Bukkit.getPlayer(args[0]);
-                    if (player.equals(target)) {
-                        player.sendMessage(ChatColor.DARK_PURPLE + "You can't duel yourself silly billy!");
-                        return true;
-                    } else if (playersInGame.contains(target)) {
-                        player.sendMessage(ChatColor.RED + "That player is already in a duel!");
-                        return true;
-                    } else if ((player.getLocation().getX() - target.getLocation().getX() > 10)
-                            || (player.getLocation().getY() - target.getLocation().getY() > 10)
-                            || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
-                            ||
-                            (player.getLocation().getX() - target.getLocation().getX() < -10)
-                            || (player.getLocation().getY() - target.getLocation().getY() < -10)
-                            || (player.getLocation().getZ() - target.getLocation().getZ() < -10)) {
+                }
 
-                        player.sendMessage(ChatColor.GOLD + "You need to be within 10 blocks of that player to duel!");
+                target = Bukkit.getPlayer(args[0]);
+                if (player.equals(target)) {
+                    player.sendMessage(ChatColor.DARK_PURPLE + "You can't duel yourself silly billy!");
+                    return true;
+                }
+
+                for (Player[] players : playersInGame) {
+                    if (players[0].equals(target) || players[1].equals(target)) {
+                        player.sendMessage(ChatColor.RED + "That player is already in a duel!");
                         return true;
                     }
                 }
 
+                if ((player.getLocation().getX() - target.getLocation().getX() > 10)
+                        || (player.getLocation().getY() - target.getLocation().getY() > 10)
+                        || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
+                        ||
+                        (player.getLocation().getX() - target.getLocation().getX() < -10)
+                        || (player.getLocation().getY() - target.getLocation().getY() < -10)
+                        || (player.getLocation().getZ() - target.getLocation().getZ() < -10)) {
 
-                if (!pendingDuelRequests.isEmpty()) {
+                    player.sendMessage(ChatColor.GOLD + "You need to be within 10 blocks of that player to duel!");
+                    return true;
+                } else if (!pendingDuelRequests.isEmpty()) {
                     boolean stopLoop = false;
                     for (Player[] players : pendingDuelRequests) {
                         for (Player p : players) {
