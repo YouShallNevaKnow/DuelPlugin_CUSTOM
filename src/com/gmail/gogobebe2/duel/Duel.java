@@ -72,6 +72,7 @@ public class Duel extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnPlayerDamaged(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerQuit(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerDrop(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerPickup(), this);
     }
 
     private void loadConf() {
@@ -215,7 +216,7 @@ public class Duel extends JavaPlugin {
 
                 Player target;
                 if ((Bukkit.getOnlinePlayers().size() <= 1) || !Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0]))) {
-                    player.sendMessage(ChatColor.RED + "Can not find player!");
+                    player.sendMessage(ChatColor.RED + "Can not find player " + ChatColor.DARK_RED + args[0] + ChatColor.RED + "!");
                     return true;
                 }
 
