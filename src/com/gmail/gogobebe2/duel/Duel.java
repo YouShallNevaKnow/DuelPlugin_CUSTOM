@@ -191,106 +191,119 @@ public class Duel extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
-                for (Player players[] : playersInGame) {
-                    if (players[0].equals(player) || players[1].equals(player)) {
-                        if (commandLabel.equalsIgnoreCase("leave")) {
-                            Player killer;
-                            if (players[0].equals(player)) {
-                                killer = players[1];
-                            } else {
-                                killer = players[0];
-                            }
-                            DuelUtils.leaveDuel(players, player, killer);
-                        } else {
-                            player.sendMessage(ChatColor.RED + "You cannot use commands while in a duel! To leave type /leave");
-                        }
-                        return true;
-                    }
-                }
+
+        if (commandLabel.equalsIgnoreCase("leave")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "You have to be a player to use this command!");
+                return true;
             }
-            if (commandLabel.equalsIgnoreCase("duel")) {
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage(ChatColor.RED + "You have to be a player to use this command!");
-                    return true;
-                }
-
-                Player player = (Player) sender;
-
-                if (!sender.hasPermission("duel.*")) {
-                    player.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
-                    return true;
-                }
-
-                if (args.length > 1 || args.length < 1) {
-                    player.sendMessage(ChatColor.GOLD + "(Wrong/Wrong number) of arguments! Type " + ChatColor.GREEN + ChatColor.ITALIC
-                            + "/duel <player>" + ChatColor.GOLD + " or " + ChatColor.GREEN + ChatColor.ITALIC + "/duel accept");
-                    return true;
-                } else if (args[0].equalsIgnoreCase("deny")) {
-                    //Denying a duel with /duel deny:
-                    return StopPendingRequest(player, false);
-
-                } else if (args[0].equalsIgnoreCase("accept")) {
-                    //Accepting a duel with /duel accept:
-                    return StopPendingRequest(player, true);
-
-                } else {
-                    //Requesting a duel with /duel <player>:
-
-                    Player target;
-                    if ((Bukkit.getOnlinePlayers().size() <= 1) || !Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0]))) {
-                        player.sendMessage(ChatColor.RED + "Can not find player " + ChatColor.DARK_RED + args[0] + ChatColor.RED + "!");
-                        return true;
+            Player killer;
+            Player player = (Player) sender;
+            for (Player players[] : playersInGame) {
+                if (players[0].equals(player) || players[1].equals(player)) {
+                    if (players[0].equals(player)) {
+                        killer = players[1];
+                    } else {
+                        killer = players[0];
                     }
-
-                    target = Bukkit.getPlayer(args[0]);
-                    if (player.equals(target)) {
-                        player.sendMessage(ChatColor.DARK_PURPLE + "You can't duel yourself silly billy!");
-                        return true;
-                    }
-
-                    for (Player[] players : playersInGame) {
-                        if (players[0].equals(target) || players[1].equals(target)) {
-                            player.sendMessage(ChatColor.RED + "That player is already in a duel!");
-                            return true;
-                        }
-                    }
-
-                    if ((player.getLocation().getX() - target.getLocation().getX() > 10)
-                            || (player.getLocation().getY() - target.getLocation().getY() > 10)
-                            || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
-                            ||
-                            (player.getLocation().getX() - target.getLocation().getX() < -10)
-                            || (player.getLocation().getY() - target.getLocation().getY() < -10)
-                            || (player.getLocation().getZ() - target.getLocation().getZ() < -10)) {
-
-                        player.sendMessage(ChatColor.GOLD + "You need to be within 10 blocks of that player to duel!");
-                        return true;
-                    } else if (!pendingDuelRequests.isEmpty()) {
-                        boolean stopLoop = false;
-                        for (Player[] players : pendingDuelRequests) {
-                            for (Player p : players) {
-                                if (p.equals(player) || p.equals(target)) {
-                                    p.sendMessage(ChatColor.RED + "Previous duel request canceled");
-                                    stopLoop = true;
-                                }
-                            }
-                            if (stopLoop) {
-                                pendingDuelRequests.remove(players);
-                                break;
-                            }
-                        }
-                    }
-
-                    pendingDuelRequests.add(new Player[]{target, player});
-                    player.sendMessage(ChatColor.RED + "Duel request sent to " + ChatColor.DARK_RED + target.getDisplayName() + ChatColor.RED + ". To cancel, type " + ChatColor.GREEN + "/duel cancel");
-                    target.sendMessage(ChatColor.DARK_RED + player.getDisplayName() + ChatColor.RED + " sent you a duel request. To accept type "
-                            + ChatColor.GREEN + "/duel accept" + ChatColor.RED + " or " + ChatColor.GREEN + "/duel deny" + ChatColor.RED + " to deny.");
+                    DuelUtils.leaveDuel(players, player, killer);
                     return true;
                 }
             }
+            player.sendMessage(ChatColor.RED + "You are not in a duel! Do duel someone type /duel <player>");
             return true;
+
+        } else if ((sender instanceof Player) && !commandLabel.equalsIgnoreCase("leave")) {
+            Player player = (Player) sender;
+            for (Player players[] : playersInGame) {
+                if (players[0].equals(player) || players[1].equals(player)) {
+                    player.sendMessage(ChatColor.RED + "You cannot use commands while in a duel! To leave type /leave");
+                    return true;
+                }
+            }
+        }
+
+        if (commandLabel.equalsIgnoreCase("duel")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "You have to be a player to use this command!");
+                return true;
+            }
+
+            Player player = (Player) sender;
+
+            if (!sender.hasPermission("duel.*")) {
+                player.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                return true;
+            }
+
+            if (args.length > 1 || args.length < 1) {
+                player.sendMessage(ChatColor.GOLD + "Wrong/(Wrong number) of arguments! Type " + ChatColor.GREEN + ChatColor.ITALIC
+                        + "/duel <player>" + ChatColor.GOLD + " or " + ChatColor.GREEN + ChatColor.ITALIC + "/duel accept");
+                return true;
+            } else if (args[0].equalsIgnoreCase("deny")) {
+                //Denying a duel with /duel deny:
+                return StopPendingRequest(player, false);
+
+            } else if (args[0].equalsIgnoreCase("accept")) {
+                //Accepting a duel with /duel accept:
+                return StopPendingRequest(player, true);
+
+            } else {
+                //Requesting a duel with /duel <player>:
+
+                Player target;
+                if ((Bukkit.getOnlinePlayers().size() <= 1) || !Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(args[0]))) {
+                    player.sendMessage(ChatColor.RED + "Can not find player " + ChatColor.DARK_RED + args[0] + ChatColor.RED + "!");
+                    return true;
+                }
+
+                target = Bukkit.getPlayer(args[0]);
+                if (player.equals(target)) {
+                    player.sendMessage(ChatColor.DARK_PURPLE + "You can't duel yourself silly billy!");
+                    return true;
+                }
+
+                for (Player[] players : playersInGame) {
+                    if (players[0].equals(target) || players[1].equals(target)) {
+                        player.sendMessage(ChatColor.RED + "That player is already in a duel!");
+                        return true;
+                    }
+                }
+
+                if ((player.getLocation().getX() - target.getLocation().getX() > 10)
+                        || (player.getLocation().getY() - target.getLocation().getY() > 10)
+                        || (player.getLocation().getZ() - target.getLocation().getZ() > 10)
+                        ||
+                        (player.getLocation().getX() - target.getLocation().getX() < -10)
+                        || (player.getLocation().getY() - target.getLocation().getY() < -10)
+                        || (player.getLocation().getZ() - target.getLocation().getZ() < -10)) {
+
+                    player.sendMessage(ChatColor.GOLD + "You need to be within 10 blocks of that player to duel!");
+                    return true;
+                } else if (!pendingDuelRequests.isEmpty()) {
+                    boolean stopLoop = false;
+                    for (Player[] players : pendingDuelRequests) {
+                        for (Player p : players) {
+                            if (p.equals(player) || p.equals(target)) {
+                                p.sendMessage(ChatColor.RED + "Previous duel request canceled");
+                                stopLoop = true;
+                            }
+                        }
+                        if (stopLoop) {
+                            pendingDuelRequests.remove(players);
+                            break;
+                        }
+                    }
+                }
+
+                pendingDuelRequests.add(new Player[]{target, player});
+                player.sendMessage(ChatColor.RED + "Duel request sent to " + ChatColor.DARK_RED + target.getDisplayName() + ChatColor.RED + ". To cancel, type " + ChatColor.GREEN + "/duel cancel");
+                target.sendMessage(ChatColor.DARK_RED + player.getDisplayName() + ChatColor.RED + " sent you a duel request. To accept type "
+                        + ChatColor.GREEN + "/duel accept" + ChatColor.RED + " or " + ChatColor.GREEN + "/duel deny" + ChatColor.RED + " to deny.");
+                return true;
+            }
+        }
+        return true;
     }
 
 }
