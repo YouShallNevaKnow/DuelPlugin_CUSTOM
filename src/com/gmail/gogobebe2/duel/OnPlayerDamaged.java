@@ -1,6 +1,7 @@
 package com.gmail.gogobebe2.duel;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,9 +37,25 @@ public class OnPlayerDamaged implements Listener {
                             if (eEvent.getDamager() instanceof Player) {
                                 killer = (Player) eEvent.getDamager();
                                 killer.sendMessage(ChatColor.BLUE + "You cannot damage people who are in a duel!");
+                                event.setCancelled(true);
+                                return;
                             }
-                            event.setCancelled(true);
-                            return;
+                            else if (eEvent.getDamager() instanceof Arrow) {
+                                if (players[0].equals(player)) {
+                                    killer = players[1];
+                                } else if (players[1].equals(player)) {
+                                    killer = players[0];
+                                }
+                                Arrow arrow = (Arrow) eEvent.getDamager();
+                                if (!arrow.getShooter().equals(killer)) {
+                                    event.setCancelled(true);
+                                    return;
+                                }
+                            }
+                            else {
+                                event.setCancelled(true);
+                                return;
+                            }
                         }
                     }
                     else {
@@ -72,6 +89,16 @@ public class OnPlayerDamaged implements Listener {
                         event.setCancelled(true);
                         break;
                     }
+                    else if (eEvent.getDamager() instanceof Arrow) {
+                        Arrow arrow = (Arrow) eEvent.getDamager();
+
+                        if (players[0].equals(arrow.getShooter()) || players[1].equals(arrow.getShooter())) {
+                            eEvent.getDamager().sendMessage(ChatColor.BLUE + "You cannot damage mobs while in a duel!");
+                            event.setCancelled(true);
+                            break;
+                        }
+                    }
+
                 }
             }
         }

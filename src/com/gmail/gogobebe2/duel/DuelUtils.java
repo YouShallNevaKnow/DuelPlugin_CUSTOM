@@ -3,6 +3,7 @@ package com.gmail.gogobebe2.duel;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -28,18 +29,24 @@ public class DuelUtils {
         else {
             throw new IllegalArgumentException("cancelDropOrPickup<E>(E e) takes the parameter of type PlayerDropItemEvent or PlayerPickupItemEvent");
         }
+
         if (!Duel.getPlayersInGame().isEmpty()) {
             for (Player[] players : Duel.getPlayersInGame()) {
                 if (players[0].equals(e.getPlayer()) || players[1].equals(e.getPlayer())) {
                     if (eventState.equals(events.DROP)) {
                         PlayerDropItemEvent event = (PlayerDropItemEvent) e;
+                        if (event.getItemDrop().getItemStack().getType().equals(Material.ARROW)) {
+                            return;
+                        }
                         event.getPlayer().sendMessage(ChatColor.BLUE + "You cannot drop items whilst in a duel!");
                         event.setCancelled(true);
                         return;
                     }
                     else if (eventState.equals(events.PICKUP)) {
                         PlayerPickupItemEvent event = (PlayerPickupItemEvent) e;
-                        event.getPlayer().sendMessage(ChatColor.BLUE + "You cannot pickup items whilst in a duel!");
+                        if (event.getItem().getItemStack().getType().equals(Material.ARROW)) {
+                            return;
+                        }
                         event.setCancelled(true);
                         return;
                     }

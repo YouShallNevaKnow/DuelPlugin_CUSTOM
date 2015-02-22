@@ -35,33 +35,28 @@ public class OnPlayerMove implements Listener {
                     if (_30BlocksAway) {
                         player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD
                                 + "You have reached the border of the duel! Turn back and face your enemy like a man!");
-                        Location cords = event.getFrom();
+                        Location cords = event.getTo();
+                        cords.setX(centerX);
+                        cords.setZ(centerZ);
+                        cords.setY(Duel.getOriginalLocation().get(accepter).getY() + 2);
                         if (event.getTo().getZ() > event.getFrom().getZ()) {
                             if (event.getTo().getZ() - event.getFrom().getZ() >= 1) {
-                                cords.setZ(cords.getZ() - 1);
-                                event.setTo(cords);
-                                return;
+                                player.teleport(cords);
                             }
                         }
                         if (event.getTo().getZ() < event.getFrom().getZ()) {
                             if (event.getFrom().getZ() - event.getTo().getZ() >= 1) {
-                                cords.setZ(cords.getZ() + 1);
-                                event.setTo(cords);
-                                return;
+                                player.teleport(cords);
                             }
                         }
                         if (event.getTo().getX() > event.getFrom().getX()) {
                             if (event.getTo().getX() - event.getFrom().getX() >= 1) {
-                                cords.setX(cords.getX() - 1);
-                                event.setTo(cords);
-                                return;
+                                player.teleport(cords);
                             }
                         }
                         if (event.getTo().getX() < event.getFrom().getX()) {
                             if (event.getFrom().getX() - event.getTo().getX() >= 1) {
-                                cords.setX(cords.getX() + 1);
-                                event.setTo(cords);
-                                return;
+                                player.teleport(cords);
                             }
                         }
                         event.setCancelled(true);
