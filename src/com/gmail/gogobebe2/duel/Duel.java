@@ -191,6 +191,27 @@ public class Duel extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+        if (sender instanceof  Player) {
+            Player player = (Player) sender;
+            for (Player players[] : playersInGame) {
+                if (players[0].equals(player) || players[1].equals(player)) {
+                    if (commandLabel.equalsIgnoreCase("leave")) {
+                        Player killer;
+                        if (players[0].equals(player)) {
+                            killer = players[1];
+                        }
+                        else {
+                            killer = players[0];
+                        }
+                        DuelUtils.leaveDuel(players, player, killer);
+                    }
+                    else {
+                        player.sendMessage(ChatColor.RED + "You cannot use commands while in a duel! To leave type /leave");
+                    }
+                    return true;
+                }
+            }
+        }
         if (commandLabel.equalsIgnoreCase("duel")) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.RED + "You have to be a player to use this command!");
