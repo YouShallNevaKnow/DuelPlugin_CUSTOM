@@ -27,7 +27,6 @@ public class Duel extends JavaPlugin {
     private static HashMap<Player, Float> originalEXP = new HashMap<>();
     private static HashMap<Player, Double> originalHealth = new HashMap<>();
     private static HashMap<Player, Collection<PotionEffect>> originalPotionEffects = new HashMap<>();
-    private static List<Player> disableCommand = new ArrayList<>();
 
     public static List<Player[]> getPlayersInGame() {
         return playersInGame;
@@ -64,11 +63,6 @@ public class Duel extends JavaPlugin {
     public static List<Player> getPlayersGameStarting() {
         return playersGameStarting;
     }
-
-    public static List<Player> getDisableCommand() {
-        return disableCommand;
-    }
-
     @Override
     public void onEnable() {
         loadConf();
@@ -218,14 +212,6 @@ public class Duel extends JavaPlugin {
             player.sendMessage(ChatColor.RED + "You are not in a duel! Do duel someone type /duel <player>");
             return true;
 
-        } else if ((sender instanceof Player) && !commandLabel.equalsIgnoreCase("leave")) {
-            Player player = (Player) sender;
-            for (Player players[] : playersInGame) {
-                if (players[0].equals(player) || players[1].equals(player)) {
-                    disableCommand.add(player);
-                    return true;
-                }
-            }
         }
 
         if (commandLabel.equalsIgnoreCase("duel")) {

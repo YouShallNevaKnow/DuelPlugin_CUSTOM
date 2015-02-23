@@ -1,6 +1,7 @@
 package com.gmail.gogobebe2.duel;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,12 +13,16 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 public class OnCommand implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCommand(PlayerCommandPreprocessEvent event){
-        if (Duel.getDisableCommand().contains(event.getPlayer())) {
-            event.getPlayer().sendMessage(ChatColor.RED + "You cannot use commands while in a duel! To leave type /leave");
-            Duel.getDisableCommand().remove(event.getPlayer());
-            event.setCancelled(true);
+        if (!event.getMessage().equalsIgnoreCase("/leave")) {
+            Player player = event.getPlayer();
+            for (Player players[] : Duel.getPlayersInGame()) {
+                if (players[0].equals(player) || players[1].equals(player)) {
+                    player.sendMessage(ChatColor.RED + "You cannot use commands while in a duel! To leave type /leave");
+                    event.setCancelled(true);
+                    return;
+                }
+            }
         }
-
     }
 
 
