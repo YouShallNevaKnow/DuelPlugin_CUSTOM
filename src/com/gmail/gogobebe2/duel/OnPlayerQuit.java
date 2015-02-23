@@ -25,7 +25,7 @@ public class OnPlayerQuit implements Listener {
                         else {
                             killer = players[0];
                         }
-                        DuelUtils.leaveDuel(players, player, killer, duel.getConfig());
+                        DuelUtils.leaveDuel(players, player, killer, duel);
                     }
                 }
             }

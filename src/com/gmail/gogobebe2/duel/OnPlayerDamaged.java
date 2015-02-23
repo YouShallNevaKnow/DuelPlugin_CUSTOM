@@ -73,7 +73,7 @@ public class OnPlayerDamaged implements Listener {
 
                     if (killer != null) {
                         if (event.getFinalDamage() >= player.getHealth()) {
-                            DuelUtils.leaveDuel(players, player, killer, duel.getConfig());
+                            DuelUtils.leaveDuel(players, player, killer, duel);
                             event.setCancelled(true);
                             return;
                         } else {

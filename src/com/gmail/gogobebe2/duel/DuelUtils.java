@@ -56,7 +56,7 @@ public class DuelUtils {
             }
         }
     }
-    public static void leaveDuel(Player[] players, Player player, Player killer, FileConfiguration config) {
+    public static void leaveDuel(Player[] players, Player player, Player killer, Duel duel) {
         Firework f = killer.getWorld().spawn(killer.getLocation(), Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
         fm.addEffect(FireworkEffect.builder()
@@ -93,26 +93,27 @@ public class DuelUtils {
         }
 
         killer.sendMessage(ChatColor.DARK_AQUA + "You won a duel against " + player.getDisplayName() + ". Congratulations!");
-        if (!config.contains("Players." + killer.getUniqueId() + ".losses")) {
-            config.set("Players." + killer.getUniqueId() + ".losses", 0);
+        if (!duel.getConfig().contains("Players." + killer.getUniqueId() + ".losses")) {
+            duel.getConfig().set("Players." + killer.getUniqueId() + ".losses", 0);
         }
-        if (!config.contains("Players." + killer.getUniqueId() + ".wins")) {
-            config.set("Players." + killer.getUniqueId() + ".wins", 0);
+        if (!duel.getConfig().contains("Players." + killer.getUniqueId() + ".wins")) {
+            duel.getConfig().set("Players." + killer.getUniqueId() + ".wins", 0);
         }
         else {
-            config.set("Players." + killer.getUniqueId() + ".wins", config.getInt("Players." + killer.getUniqueId() + ".wins") + 1);
+            duel.getConfig().set("Players." + killer.getUniqueId() + ".wins", duel.getConfig().getInt("Players." + killer.getUniqueId() + ".wins") + 1);
         }
 
 
         player.sendMessage(ChatColor.DARK_AQUA + killer.getDisplayName() + " won the duel against you! ");
-        if (!config.contains("Players." + player.getUniqueId() + ".wins")) {
-            config.set("Players." + player.getUniqueId() + ".wins", 0);
+        if (!duel.getConfig().contains("Players." + player.getUniqueId() + ".wins")) {
+            duel.getConfig().set("Players." + player.getUniqueId() + ".wins", 0);
         }
-        if (!config.contains("Players." + player.getUniqueId() + ".losses")) {
-            config.set("Players." + player.getUniqueId() + ".losses", 0);
+        if (!duel.getConfig().contains("Players." + player.getUniqueId() + ".losses")) {
+            duel.getConfig().set("Players." + player.getUniqueId() + ".losses", 0);
         }
         else {
-            config.set("Players." + player.getUniqueId() + ".losses", config.getInt("Players." + player.getUniqueId() + ".losses") + 1);
+            duel.getConfig().set("Players." + player.getUniqueId() + ".losses", duel.getConfig().getInt("Players." + player.getUniqueId() + ".losses") + 1);
         }
+        duel.saveConfig();
     }
 }

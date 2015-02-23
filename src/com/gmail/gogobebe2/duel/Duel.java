@@ -208,7 +208,7 @@ public class Duel extends JavaPlugin {
                     } else {
                         killer = players[0];
                     }
-                    DuelUtils.leaveDuel(players, player, killer, this.getConfig());
+                    DuelUtils.leaveDuel(players, player, killer, this);
                     return true;
                 }
             }
@@ -248,8 +248,8 @@ public class Duel extends JavaPlugin {
                 player.sendMessage(ChatColor.GOLD + "You currently have "
                         + ChatColor.GREEN + this.getConfig().getInt("Players." + player.getUniqueId() + ".wins")
                         + ChatColor.GOLD + " wins and "
-                        + ChatColor.GREEN + this.getConfig().getInt("Players." + player.getUniqueId() + ".wins")
-                        + ChatColor.GOLD + "losses.");
+                        + ChatColor.GREEN + this.getConfig().getInt("Players." + player.getUniqueId() + ".losses")
+                        + ChatColor.GOLD + " losses.");
             }
             else {
                 //Requesting a duel with /duel <player>:
