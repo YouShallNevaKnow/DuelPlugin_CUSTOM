@@ -35,7 +35,7 @@ public class DuelUtils {
             for (Player[] players : Duel.getPlayersInGame()) {
                 if (players[0].equals(e.getPlayer()) || players[1].equals(e.getPlayer())) {
                     if (eventState.equals(events.DROP)) {
-                        PlayerDropItemEvent event = (PlayerDropItemEvent) e;
+                        @SuppressWarnings("ConstantConditions") PlayerDropItemEvent event = (PlayerDropItemEvent) e;
                         if (event.getItemDrop().getItemStack().getType().equals(Material.ARROW)) {
                             return;
                         }

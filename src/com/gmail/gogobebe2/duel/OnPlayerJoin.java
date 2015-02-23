@@ -4,9 +4,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-/**
- * Created by william on 2/23/15.
- */
 public class OnPlayerJoin implements Listener{
     private Duel duel;
 
