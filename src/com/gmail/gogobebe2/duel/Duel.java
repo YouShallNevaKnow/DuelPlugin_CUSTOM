@@ -27,6 +27,7 @@ public class Duel extends JavaPlugin {
     private static HashMap<Player, Float> originalEXP = new HashMap<>();
     private static HashMap<Player, Double> originalHealth = new HashMap<>();
     private static HashMap<Player, Collection<PotionEffect>> originalPotionEffects = new HashMap<>();
+    private static List<Player> disableCommand = new ArrayList<>();
 
     public static List<Player[]> getPlayersInGame() {
         return playersInGame;
@@ -64,6 +65,9 @@ public class Duel extends JavaPlugin {
         return playersGameStarting;
     }
 
+    public static List<Player> getDisableCommand() {
+        return disableCommand;
+    }
 
     @Override
     public void onEnable() {
@@ -73,6 +77,7 @@ public class Duel extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnPlayerQuit(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerDrop(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerPickup(), this);
+        getServer().getPluginManager().registerEvents(new OnCommand(), this);
     }
 
     private void loadConf() {
@@ -217,7 +222,7 @@ public class Duel extends JavaPlugin {
             Player player = (Player) sender;
             for (Player players[] : playersInGame) {
                 if (players[0].equals(player) || players[1].equals(player)) {
-                    player.sendMessage(ChatColor.RED + "You cannot use commands while in a duel! To leave type /leave");
+                    disableCommand.add(player);
                     return true;
                 }
             }
