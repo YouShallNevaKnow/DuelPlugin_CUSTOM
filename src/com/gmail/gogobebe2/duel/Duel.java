@@ -63,15 +63,18 @@ public class Duel extends JavaPlugin {
     public static List<Player> getPlayersGameStarting() {
         return playersGameStarting;
     }
+
     @Override
     public void onEnable() {
+
         loadConf();
         getServer().getPluginManager().registerEvents(new OnPlayerMove(), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerDamaged(), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerQuit(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerDamaged(this), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerQuit(this), this);
         getServer().getPluginManager().registerEvents(new OnPlayerDrop(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerPickup(), this);
         getServer().getPluginManager().registerEvents(new OnCommand(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerJoin(this), this);
     }
 
     private void loadConf() {
@@ -191,7 +194,7 @@ public class Duel extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
-        if (commandLabel.equalsIgnoreCase("leave")) {
+        if (commandLabel.equalsIgnoreCase("leaveduel")) {
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.RED + "You have to be a player to use this command!");
                 return true;
@@ -205,7 +208,7 @@ public class Duel extends JavaPlugin {
                     } else {
                         killer = players[0];
                     }
-                    DuelUtils.leaveDuel(players, player, killer);
+                    DuelUtils.leaveDuel(players, player, killer, this.getConfig());
                     return true;
                 }
             }
@@ -229,7 +232,8 @@ public class Duel extends JavaPlugin {
 
             if (args.length > 1 || args.length < 1) {
                 player.sendMessage(ChatColor.GOLD + "Wrong/(Wrong number) of arguments! Type " + ChatColor.GREEN + ChatColor.ITALIC
-                        + "/duel <player>" + ChatColor.GOLD + " or " + ChatColor.GREEN + ChatColor.ITALIC + "/duel accept");
+                        + "/duel <player>" + ChatColor.GOLD + ", " + ChatColor.GREEN + ChatColor.ITALIC + "/duel stats"
+                        + ChatColor.GOLD + " or " + ChatColor.GREEN + ChatColor.ITALIC + "/duel accept");
                 return true;
             } else if (args[0].equalsIgnoreCase("deny")) {
                 //Denying a duel with /duel deny:
@@ -239,7 +243,15 @@ public class Duel extends JavaPlugin {
                 //Accepting a duel with /duel accept:
                 return StopPendingRequest(player, true);
 
-            } else {
+            }
+            else if (args[0].equalsIgnoreCase("stats")) {
+                player.sendMessage(ChatColor.GOLD + "You currently have "
+                        + ChatColor.GREEN + this.getConfig().getInt("Players." + player.getUniqueId() + ".wins")
+                        + ChatColor.GOLD + " wins and "
+                        + ChatColor.GREEN + this.getConfig().getInt("Players." + player.getUniqueId() + ".wins")
+                        + ChatColor.GOLD + "losses.");
+            }
+            else {
                 //Requesting a duel with /duel <player>:
 
                 Player target;

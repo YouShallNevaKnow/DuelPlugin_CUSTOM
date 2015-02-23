@@ -1,6 +1,6 @@
 name: DuelCustom
-version: 1.11.0_CUSTOM_DEV
-main: com.gmail.gogobebe2.duel.Duel
+version: 1.0.0_CUSTOM_BETA
+main: com.gmail. gogobebe2.duel.Duel
 description: A pvp duel plugin for 1v1 fights.
 author: gogobebe2
 website: gogobebe2@gmail.com
@@ -13,6 +13,6 @@ commands:
             duel.*:
                  description: Gives access to /duel
                  default: op
-    leave:
+    leaveduel:
         usage: /<command>
         description: Leave the duel.

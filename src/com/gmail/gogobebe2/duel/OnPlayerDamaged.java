@@ -10,6 +10,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 public class OnPlayerDamaged implements Listener {
+    private Duel duel;
+
+    public OnPlayerDamaged(Duel duel) {
+        this.duel = duel;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void PlayerDamageReceive(EntityDamageEvent event) {
@@ -68,7 +73,7 @@ public class OnPlayerDamaged implements Listener {
 
                     if (killer != null) {
                         if (event.getFinalDamage() >= player.getHealth()) {
-                            DuelUtils.leaveDuel(players, player, killer);
+                            DuelUtils.leaveDuel(players, player, killer, duel.getConfig());
                             event.setCancelled(true);
                             return;
                         } else {

@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -55,7 +56,7 @@ public class DuelUtils {
             }
         }
     }
-    public static void leaveDuel(Player[] players, Player player, Player killer) {
+    public static void leaveDuel(Player[] players, Player player, Player killer, FileConfiguration config) {
         Firework f = killer.getWorld().spawn(killer.getLocation(), Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
         fm.addEffect(FireworkEffect.builder()
@@ -92,6 +93,26 @@ public class DuelUtils {
         }
 
         killer.sendMessage(ChatColor.DARK_AQUA + "You won a duel against " + player.getDisplayName() + ". Congratulations!");
+        if (!config.contains("Players." + killer.getUniqueId() + ".losses")) {
+            config.set("Players." + killer.getUniqueId() + ".losses", 0);
+        }
+        if (!config.contains("Players." + killer.getUniqueId() + ".wins")) {
+            config.set("Players." + killer.getUniqueId() + ".wins", 0);
+        }
+        else {
+            config.set("Players." + killer.getUniqueId() + ".wins", config.getInt("Players." + killer.getUniqueId() + ".wins") + 1);
+        }
+
+
         player.sendMessage(ChatColor.DARK_AQUA + killer.getDisplayName() + " won the duel against you! ");
+        if (!config.contains("Players." + player.getUniqueId() + ".wins")) {
+            config.set("Players." + player.getUniqueId() + ".wins", 0);
+        }
+        if (!config.contains("Players." + player.getUniqueId() + ".losses")) {
+            config.set("Players." + player.getUniqueId() + ".losses", 0);
+        }
+        else {
+            config.set("Players." + player.getUniqueId() + ".losses", config.getInt("Players." + player.getUniqueId() + ".losses") + 1);
+        }
     }
 }
