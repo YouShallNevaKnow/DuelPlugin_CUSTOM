@@ -66,6 +66,7 @@ public class OnPlayerMove implements Listener {
             }
         }
 
+
         if (!Duel.getPlayersGameStarting().isEmpty()) {
             for (Player p : Duel.getPlayersGameStarting()) {
                 if (p.equals(player)) {
