@@ -56,6 +56,7 @@ public class DuelUtils {
             }
         }
     }
+    
     public static void leaveDuel(Player[] players, Player player, Player killer, Duel duel) {
         Firework f = killer.getWorld().spawn(killer.getLocation(), Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
@@ -92,18 +93,10 @@ public class DuelUtils {
             Duel.getOriginalPotionEffects().remove(p);
         }
 
-        killer.sendMessage(ChatColor.DARK_AQUA + "You won a duel against " + player.getDisplayName() + ". Congratulations!");
-        if (!duel.getConfig().contains("Players." + killer.getUniqueId() + ".losses")) {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".losses", 0);
-        }
-        if (!duel.getConfig().contains("Players." + killer.getUniqueId() + ".wins")) {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".wins", 0);
-        }
-        else {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".wins", duel.getConfig().getInt("Players." + killer.getUniqueId() + ".wins") + 1);
-        }
-
-
+        updateStats(killer);
+        updateStats(player);
+    }
+    private static void updateStats(Player player) {
         player.sendMessage(ChatColor.DARK_AQUA + killer.getDisplayName() + " won the duel against you! ");
         if (!duel.getConfig().contains("Players." + player.getUniqueId() + ".wins")) {
             duel.getConfig().set("Players." + player.getUniqueId() + ".wins", 0);
