@@ -2,7 +2,7 @@ name: DuelCustom
 version: 1.0.2_CUSTOM_BETA
 main: com.gmail.gogobebe2.duel.Duel
 description: A pvp duel plugin for 1v1 fights.
-author: gogobebe2
+author: William Bryant
 website: gogobebe2@gmail.com
 
 commands:
