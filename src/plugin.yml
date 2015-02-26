@@ -7,12 +7,12 @@ website: gogobebe2@gmail.com
 
 commands:
     duel:
-        usage: /<command>
+        usage: /duel <player>, /duel stats or /duel accept
         description: Duel a player in a 1v1 fight.
         permissions:
             duel.*:
                  description: Gives access to /duel
                  default: op
     leaveduel:
-        usage: /<command>
+        usage: /duelleave if in a duel.
         description: Leave the duel.
