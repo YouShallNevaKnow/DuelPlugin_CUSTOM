@@ -272,7 +272,7 @@ public class Duel extends JavaPlugin {
         }
         return true;
     }
-        public static List<Player[]> getPlayersInGame() {
+    public static List<Player[]> getPlayersInGame() {
         return playersInGame;
     }
 
