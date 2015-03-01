@@ -28,42 +28,6 @@ public class Duel extends JavaPlugin {
     private static HashMap<Player, Double> originalHealth = new HashMap<>();
     private static HashMap<Player, Collection<PotionEffect>> originalPotionEffects = new HashMap<>();
 
-    public static List<Player[]> getPlayersInGame() {
-        return playersInGame;
-    }
-
-    public static HashMap<Player, GameMode> getOriginalGamemode() {
-        return originalGamemode;
-    }
-
-    public static HashMap<Player, Location> getOriginalLocation() {
-        return originalLocation;
-    }
-
-    public static HashMap<Player, Integer> getOriginalFoodLevel() {
-        return originalFoodLevel;
-    }
-
-    public static HashMap<Player, Integer> getOriginalFireTicks() {
-        return originalFireTicks;
-    }
-
-    public static HashMap<Player, Float> getOriginalEXP() {
-        return originalEXP;
-    }
-
-    public static HashMap<Player, Double> getOriginalHealth() {
-        return originalHealth;
-    }
-
-    public static HashMap<Player, Collection<PotionEffect>> getOriginalPotionEffects() {
-        return originalPotionEffects;
-    }
-
-    public static List<Player> getPlayersGameStarting() {
-        return playersGameStarting;
-    }
-
     @Override
     public void onEnable() {
 
@@ -306,6 +270,41 @@ public class Duel extends JavaPlugin {
             }
         }
         return true;
+    }
+    public static List<Player[]> getPlayersInGame() {
+        return playersInGame;
+    }
+
+    public static HashMap<Player, GameMode> getOriginalGamemode() {
+        return originalGamemode;
+    }
+
+    public static HashMap<Player, Location> getOriginalLocation() {
+        return originalLocation;
+    }
+
+    public static HashMap<Player, Integer> getOriginalFoodLevel() {
+        return originalFoodLevel;
+    }
+
+    public static HashMap<Player, Integer> getOriginalFireTicks() {
+        return originalFireTicks;
+    }
+
+    public static HashMap<Player, Float> getOriginalEXP() {
+        return originalEXP;
+    }
+
+    public static HashMap<Player, Double> getOriginalHealth() {
+        return originalHealth;
+    }
+
+    public static HashMap<Player, Collection<PotionEffect>> getOriginalPotionEffects() {
+        return originalPotionEffects;
+    }
+
+    public static List<Player> getPlayersGameStarting() {
+        return playersGameStarting;
     }
 
 }
