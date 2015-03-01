@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -56,6 +55,7 @@ public class DuelUtils {
             }
         }
     }
+
     public static void leaveDuel(Player[] players, Player player, Player killer, Duel duel) {
         Firework f = killer.getWorld().spawn(killer.getLocation(), Firework.class);
         FireworkMeta fm = f.getFireworkMeta();
@@ -92,19 +92,13 @@ public class DuelUtils {
             Duel.getOriginalPotionEffects().remove(p);
         }
 
-        killer.sendMessage(ChatColor.DARK_AQUA + "You won a duel against " + player.getDisplayName() + ". Congratulations!");
-        if (!duel.getConfig().contains("Players." + killer.getUniqueId() + ".losses")) {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".losses", 0);
-        }
-        if (!duel.getConfig().contains("Players." + killer.getUniqueId() + ".wins")) {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".wins", 0);
-        }
-        else {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".wins", duel.getConfig().getInt("Players." + killer.getUniqueId() + ".wins") + 1);
-        }
-
-
         player.sendMessage(ChatColor.DARK_AQUA + killer.getDisplayName() + " won the duel against you! ");
+        killer.sendMessage(ChatColor.DARK_AQUA + "You won a duel against " + player.getDisplayName() + ". Congratulations!");
+
+        updateStats(killer, duel);
+        updateStats(player, duel);
+    }
+    private static void updateStats(Player player, Duel duel) {
         if (!duel.getConfig().contains("Players." + player.getUniqueId() + ".wins")) {
             duel.getConfig().set("Players." + player.getUniqueId() + ".wins", 0);
         }

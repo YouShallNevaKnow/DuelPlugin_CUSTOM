@@ -149,7 +149,6 @@ public class Duel extends JavaPlugin {
 
     private boolean StopPendingRequest(Player accepter, boolean isAccepting) {
         Player requester = null;
-
         //Accepting a duel with /duel accept:
         if (pendingDuelRequests.isEmpty()) {
             accepter.sendMessage(ChatColor.RED + "No duel requests pending!");
