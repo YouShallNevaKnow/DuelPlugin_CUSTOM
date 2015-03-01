@@ -17,6 +17,7 @@ enum events {
     DROP, PICKUP
 }
 
+
 public class DuelUtils {
 
     public static <E extends PlayerEvent> void cancelDropOrPickup(E e) throws IllegalArgumentException{
@@ -93,18 +94,12 @@ public class DuelUtils {
         }
 
         killer.sendMessage(ChatColor.DARK_AQUA + "You won a duel against " + player.getDisplayName() + ". Congratulations!");
-        if (!duel.getConfig().contains("Players." + killer.getUniqueId() + ".losses")) {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".losses", 0);
-        }
-        if (!duel.getConfig().contains("Players." + killer.getUniqueId() + ".wins")) {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".wins", 0);
-        }
-        else {
-            duel.getConfig().set("Players." + killer.getUniqueId() + ".wins", duel.getConfig().getInt("Players." + killer.getUniqueId() + ".wins") + 1);
-        }
-
-
         player.sendMessage(ChatColor.DARK_AQUA + killer.getDisplayName() + " won the duel against you! ");
+
+        updateStats(killer, duel, true);
+        updateStats(player, duel, false);
+    }
+    private static void updateStats(Player player, Duel duel, boolean isKiller) {
         if (!duel.getConfig().contains("Players." + player.getUniqueId() + ".wins")) {
             duel.getConfig().set("Players." + player.getUniqueId() + ".wins", 0);
         }
@@ -112,7 +107,12 @@ public class DuelUtils {
             duel.getConfig().set("Players." + player.getUniqueId() + ".losses", 0);
         }
         else {
-            duel.getConfig().set("Players." + player.getUniqueId() + ".losses", duel.getConfig().getInt("Players." + player.getUniqueId() + ".losses") + 1);
+            if (isKiller) {
+                duel.getConfig().set("Players." + player.getUniqueId() + ".wins", duel.getConfig().getInt("Players." + player.getUniqueId() + ".wins") + 1);
+            }
+            else {
+                duel.getConfig().set("Players." + player.getUniqueId() + ".losses", duel.getConfig().getInt("Players." + player.getUniqueId() + ".losses") + 1);
+            }
         }
         duel.saveConfig();
     }
