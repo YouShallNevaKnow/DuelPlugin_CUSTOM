@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -99,7 +98,7 @@ public class DuelUtils {
         updateStats(killer, duel, true);
         updateStats(player, duel, false);
     }
-    private static void updateStats(Player player, Duel duel, boolean isKiller) {
+    private static void updateStats(Player player, Duel duel, boolean playerWon) {
         if (!duel.getConfig().contains("Players." + player.getUniqueId() + ".wins")) {
             duel.getConfig().set("Players." + player.getUniqueId() + ".wins", 0);
         }
@@ -107,7 +106,7 @@ public class DuelUtils {
             duel.getConfig().set("Players." + player.getUniqueId() + ".losses", 0);
         }
         else {
-            if (isKiller) {
+            if (playerWon) {
                 duel.getConfig().set("Players." + player.getUniqueId() + ".wins", duel.getConfig().getInt("Players." + player.getUniqueId() + ".wins") + 1);
             }
             else {
