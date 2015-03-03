@@ -70,7 +70,16 @@ public class OnPlayerMove implements Listener {
         if (!Duel.getPlayersGameStarting().isEmpty()) {
             for (Player p : Duel.getPlayersGameStarting()) {
                 if (p.equals(player)) {
-                    event.setCancelled(true);
+                    Location to = event.getTo();
+                    Location originalLocation = Duel.getOriginalLocation().get(player);
+                    if (  (to.getZ() > originalLocation.getZ() + 1.5 || to.getZ() < originalLocation.getZ() - 1.5)
+                       || (to.getX() > originalLocation.getX() + 1.5 || to.getX() < originalLocation.getX() - 1.5)
+                       || (to.getY() > originalLocation.getY() + 3.5 || to.getY() < originalLocation.getY() - 3.5)
+                       ) {
+                        player.sendMessage(ChatColor.AQUA + "The duel hasn't started yet.");
+                        event.setCancelled(true);
+                        return;
+                    }
                 }
             }
         }
