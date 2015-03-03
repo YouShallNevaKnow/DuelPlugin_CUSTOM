@@ -1,5 +1,6 @@
 # DuelPlugin_CUSTOM
-A custom version of my duel plugin.
+***A custom version of my duel plugin.***
+
 name: DuelCustom
 
 version: 1.1.0_CUSTOM
