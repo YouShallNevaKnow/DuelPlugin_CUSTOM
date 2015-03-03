@@ -1,5 +1,5 @@
 # DuelPlugin_CUSTOM
-***A custom version of my duel plugin.***
+***A custom version of my other duel plugin.***
 
 name: DuelCustom
 
