@@ -9,10 +9,6 @@ main: com.gmail.gogobebe2.duel.Duel
 
 description: A pvp duel plugin for 1v1 fights.
 
-author: William Bryant
-
-website: gogobebe2@gmail.com
-
     commands:
         duel:
             usage: /duel <player>, /duel stats or /duel accept
