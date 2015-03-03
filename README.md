@@ -13,6 +13,7 @@ author: William Bryant
 website: gogobebe2@gmail.com
 
 commands:
+
     duel:
         usage: /duel <player>, /duel stats or /duel accept
         description: Duel a player in a 1v1 fight.
