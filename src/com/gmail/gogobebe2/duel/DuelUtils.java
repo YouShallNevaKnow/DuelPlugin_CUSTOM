@@ -12,9 +12,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 
-enum events {
-    DROP, PICKUP
-}
+enum events {DROP, PICKUP}
 
 
 public class DuelUtils {
