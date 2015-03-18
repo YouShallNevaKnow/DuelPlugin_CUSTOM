@@ -16,7 +16,7 @@ public class OnPlayerDamaged implements Listener {
         this.duel = duel;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerDamageReceive(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
@@ -72,12 +72,13 @@ public class OnPlayerDamaged implements Listener {
                     }
 
                     if (killer != null) {
+                        if (event.isCancelled()) {
+                            event.setCancelled(false);
+                        }
                         if (event.getFinalDamage() >= player.getHealth()) {
                             DuelUtils.leaveDuel(players, player, killer, duel);
                             event.setCancelled(true);
                             return;
-                        } else {
-                            event.setCancelled(false);
                         }
                     }
                 }
