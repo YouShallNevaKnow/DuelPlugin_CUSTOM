@@ -1,9 +1,7 @@
 # DuelPlugin_CUSTOM
-***A custom version of my other duel plugin.***
+***A custom version of my other duel plugin - No arenas needed to duel. Just duel anywhere and it creates a radius for a temporary arena.***
 
 name: DuelCustom
-
-version: 1.1.0_CUSTOM
 
 main: com.gmail.gogobebe2.duel.Duel
 
